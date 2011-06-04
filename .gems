@@ -1,0 +1,17 @@
+# .gems generated gem export file. Note that any env variable settings will be missing. Append these after using a ';' field separator
+addressable -v2.2.6
+bundler -v1.0.14
+diff-lcs -v1.1.2
+faraday -v0.6.1
+forrst -v0.1a
+json -v1.5.1
+multi_json -v1.0.3
+multipart-post -v1.1.2
+oauth2 -v0.4.1
+rack -v1.3.0
+rake -v0.9.1
+rspec -v2.6.0
+rspec-core -v2.6.3
+rspec-expectations -v2.6.0
+rspec-mocks -v2.6.0
+yard -v0.7.1
