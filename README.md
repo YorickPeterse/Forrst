@@ -10,6 +10,8 @@ stability. I'm also aiming for support of all Ruby distributions such as JRuby a
 ## Quick Example
 
 ```ruby
+require 'forrst'
+
 Forrst.configure do |client|
   client.id           = 'oauth id'
   client.secret       = 'oauth secret'
@@ -17,7 +19,7 @@ Forrst.configure do |client|
 end
 
 # Get a user
-user = Forrst::User[:username => 'Yorick Peterse']
+user = Forrst::User['YorickPeterse']
 
 # Or
 user = Forrst::User[6998]
