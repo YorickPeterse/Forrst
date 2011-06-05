@@ -10,6 +10,41 @@ module Forrst
   #
   #     user.username => 'YorickPeterse'
   #
+  # When retrieving a user you can retrieve the user's posts by calling Forrst::User#posts
+  # as following:
+  #
+  #     user.posts.each do |post|
+  #       puts post.title
+  #     end
+  #
+  # When retrieving the user's posts the library will use the class Forrst::Post which
+  # allows you to retrieve post related data such as all the comments:
+  #
+  #     user.posts.each do |post|
+  #       post.comments.each do |comment|
+  #         puts comment.body
+  #       end
+  #     end
+  #
+  # Note that comments are lazy loaded. This means that for each iteration in the posts
+  # array a GET request is fired to the Forrst API. Currently there's no way to work
+  # around this so you'll have to be careful with using this method.
+  #
+  # This class also provides the following shortcut methods for figuring out the type of
+  # user:
+  #
+  # * developer?
+  # * designer?
+  # * developer_and_designer?
+  #
+  # These can be used as following:
+  #
+  #     if user.developer?
+  #       puts "It's a nerd!"
+  #     elsif user.designer?
+  #       puts "It's a hippie!"
+  #     end
+  #
   # @author Yorick Peterse
   # @since  0.1a
   #
@@ -34,7 +69,7 @@ module Forrst
     # The user's ID.
     #
     # @author Yorick Peterse
-    # @since  0.1a 
+    # @since  0.1a
     #
     attr_reader :user_id
 
@@ -124,7 +159,7 @@ module Forrst
     #
     attr_reader :listed
 
-    ## 
+    ##
     # An array of tags for the user.
     #
     # @author Yorick Peterse
@@ -142,7 +177,7 @@ module Forrst
     #
     # @author Yorick Peterse
     # @since  0.1a
-    # @param  [String/Fixnum] options 
+    # @param  [String/Fixnum] options
     # @return [Forrst::User]
     #
     def self.[](options)

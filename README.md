@@ -9,34 +9,36 @@ stability. I'm also aiming for support of all Ruby distributions such as JRuby a
 
 ## Example
 
-```ruby
-require 'rubygems'
-require 'forrst'
+    require 'rubygems'
+    require 'forrst'
 
-Forrst.configure do |config|
-  config.id           = '123'
-  config.secret       = '123'
-  config.access_token = '123'
-end
+    Forrst.configure do |config|
+      config.id           = '123'
+      config.secret       = '123'
+      config.access_token = '123'
+    end
 
-# Get a single user
-user = Forrst::User['YorickPeterse']
-user.name    # => 'Yorick Peterse'
-user.twitter # => 'YorickPeterse'
+    # Get a single user
+    user = Forrst::User['YorickPeterse']
+    user.name    # => 'Yorick Peterse'
+    user.twitter # => 'YorickPeterse'
 
-# Get a bunch of posts
-posts = Forrst::Post.find(:type => :code, :sort => :popular)
-posts.each do |post|
-  puts post.title
-  puts post.user.username
-end
+    # Get a bunch of posts
+    posts = Forrst::Post.find(:type => :code, :sort => :popular)
+    posts.each do |post|
+      puts post.title
+      puts post.user.username
+    end
 
-# Or get a single post by it's ID or tiny ID
-post = Forrst::Post[123]
-post = Forrst::Post['YJp']
+    # Or get a single post by it's ID or tiny ID
+    post = Forrst::Post[123]
+    post = Forrst::Post['YJp']
 
-post.title # => 'Some post title'
-```
+    post.title # => 'Some post title'
+
+    post.comments.each do |comment|
+      puts comment.body
+    end
 
 ## Requirements & Installation
 

@@ -3,14 +3,14 @@ require 'oauth2'
 require 'json'
 require 'date'
 
-['version', 'monkeys/hash', 'user', 'post'].each do |file|
+['version', 'monkeys/hash', 'user', 'post', 'comment'].each do |file|
   require File.expand_path("../forrst/#{file}", __FILE__)
 end
 
 ##
 # The Forrst gem is an API library for the Forrst API that focuses on stability, ease of
 # use and minimal dependencies.
-# 
+#
 # @author Yorick Peterse
 # @since  0.1a
 #
@@ -22,6 +22,14 @@ module Forrst
   # @since  0.1a
   #
   URL = 'http://forrst.com/api/v2/'
+
+  ##
+  # A string containing the date format used for all dates returned by the API.
+  #
+  # @author Yorick Peterse
+  # @since  0.1a
+  #
+  DateFormat = '%Y-%m-%d %H:%M:%S'
 
   class << self
     # The access token returned once a client has been authorized.

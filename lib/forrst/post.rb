@@ -1,6 +1,51 @@
 module Forrst
   ##
-  # Forrst::Post is the class that represents a single post.
+  # Forrst::Post is the class that represents a single post. Posts can be one of the
+  # following types:
+  #
+  # * code
+  # * snap
+  # * question
+  # * link
+  #
+  # Based on these types certain fields may not be set. For example, the description()
+  # method will return a nil value in case the post type is set to "question" as those
+  # don't get an extra description.
+  #
+  # Retrieving a single post or multiple posts can be done using Forrst::Post.[] and
+  # Forrst::Post.find(). If you want to retrieve multiple posts you'll have to use find(),
+  # if you only want to retrieve a single post you use []():
+  #
+  #     # Retrieves all code posts.
+  #     Forrst::Post.find(:type => :code).each do |post|
+  #       puts post.title
+  #     end
+  #
+  #     # Retrieve's the post with ID 123
+  #     post = Forrst::Post[123]
+  #     puts post.title
+  #
+  # Each post will also contain the method comments(). This method sends an authenticated
+  # GET request to the Forrst server to retrieve all comments for the specified posts.
+  # This works as following:
+  #
+  #     post.comments.each do |comment|
+  #       puts comment.body
+  #     end
+  #
+  # Note that similar to Forrst::User#posts all comments are lazy-loaded as the API
+  # provides no means of eager loading all comments. Use with care or you might risk
+  # getting your ass blocked.
+  #
+  # Just like the class Forrst::User this class has a few shortcut methods for checking
+  # the type of post:
+  #
+  # * code?
+  # * snap?
+  # * question?
+  # * link?
+  #
+  # All of these will return true or false depending on the post type.
   #
   # @author Yorick Peterse
   # @since  0.1a
@@ -28,7 +73,7 @@ module Forrst
     # @author Yorick Peterse
     # @since  0.1a
     #
-    CommentURL = '/posts/comments'
+    CommentsURL = '/posts/comments'
 
     ##
     # The ID of the post.
@@ -121,7 +166,7 @@ module Forrst
     attr_reader :url
 
     ##
-    # The content of the post. If it's a question this field contains the question, if 
+    # The content of the post. If it's a question this field contains the question, if
     # it's a code post it will contain the code attached to the post.
     #
     # @author Yorick Peterse
@@ -170,7 +215,7 @@ module Forrst
     attr_reader :tags
 
     ##
-    # A hash containing the URLs to various sizes of the snap in case the post type is 
+    # A hash containing the URLs to various sizes of the snap in case the post type is
     # "snap".
     #
     # @author Yorick Peterse
@@ -210,7 +255,7 @@ module Forrst
 
       response = Forrst.oauth.request(:get, ListURL, query_items)
       response = JSON.load(response)
-      
+
       return response['resp']['posts'].map do |post|
         Post.new(post)
       end
@@ -258,8 +303,8 @@ module Forrst
       @tiny_id     = response['id']
       @type        = response['post_type']
       @post_url    = response['post_url']
-      @created_at  = Date.strptime(response['created_at'], '%Y-%m-%d %H:%M:%S')
-      @updated_at  = Date.strptime(response['updated_at'], '%Y-%m-%d %H:%M:%S')
+      @created_at  = Date.strptime(response['created_at'], Forrst::DateFormat)
+      @updated_at  = Date.strptime(response['updated_at'], Forrst::DateFormat)
       @user        = Forrst::User.new(response['user'])
       @published   = response['published']
       @public      = response['public']
@@ -290,5 +335,71 @@ module Forrst
         @snaps[:original]    = response['snaps']['original_url']
       end
     end
+
+    ##
+    # Retrieves all the comments for the current post.
+    #
+    # @example
+    #  post = Forrst::Post[10]
+    #  post.comments.each do |comment|
+    #    puts comment.body
+    #  end
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    # @return [Array]
+    #
+    def comments
+      response = Forrst.oauth.request(:get, CommentsURL, :id => @post_id)
+      response = JSON.load(response)
+
+      return response['comments'].map do |comment|
+        Forrst::Comment.new(comment)
+      end
+    end
+
+    ##
+    # Checks if the post is a question.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    # @return [TrueClass/FalseClass]
+    #
+    def question?
+      return @type === 'question'
+    end
+
+    ##
+    # Checks if the post is a snap.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    # @return [TrueClass/FalseClass]
+    #
+    def snap?
+      return @type === 'snap'
+    end
+
+    ##
+    # Checks if the post is a code post.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    # @return [TrueClass/FalseClass]
+    #
+    def code?
+      return @type === 'code'
+    end
+
+    ##
+    # Checks if the post is a link post.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    # @return [TrueClass/FalseClass]
+    #
+    def link?
+      return @type === 'link'
+    end
   end # Post
-end # Forrst
+end # Forrst)

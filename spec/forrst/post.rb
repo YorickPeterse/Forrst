@@ -1,7 +1,7 @@
 require File.expand_path('../../helper', __FILE__)
 
 describe('Forrst::Post') do
-  
+
   it('Get a list of all code posts') do
     posts = Forrst::Post.find(:type => :code)
 
@@ -36,6 +36,7 @@ describe('Forrst::Post') do
     post.user.username.should === 'YorickPeterse'
     post.title.should         === 'Forrst API in Ruby'
     post.type.should          === 'link'
+    post.link?.should         === true
   end
 
 end
