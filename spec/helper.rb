@@ -21,6 +21,10 @@ end
 Forrst.oauth.connection = Faraday.new(Forrst.oauth.site)
 Forrst.oauth.connection.build do |builder|
   builder.adapter(:test) do |stub|
+    stub.get(Forrst::StatisticsURL) do |env|
+      [200, {'Content-Type' => 'application/json'}, get_fixture('stats')]
+    end
+
     stub.get(Forrst::User::InfoURL + '?id=6998') do |env|
       [200, {'Content-Type' => 'application/json'}, get_fixture('user/info')]
     end

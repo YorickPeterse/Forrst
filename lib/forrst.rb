@@ -24,6 +24,14 @@ module Forrst
   URL = 'http://forrst.com/api/v2/'
 
   ##
+  # URL relative to Forrst::URL that contains all the API statistics.
+  #
+  # @author Yorick Peterse
+  # @since  0.1a
+  #
+  StatisticsURL = '/stats'
+
+  ##
   # A string containing the date format used for all dates returned by the API.
   #
   # @author Yorick Peterse
@@ -61,6 +69,28 @@ module Forrst
       yield self
 
       @oauth = OAuth2::Client.new(@id, @secret, :site => URL)
+    end
+
+    ##
+    # Gets a set of statistics from the API server.
+    #
+    # @example
+    #  stats = Forrst.statistics
+    #  stats[:limit] # => 150
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    # @return [Hash]
+    #
+    def statistics
+      response = @oauth.request(:get, StatisticsURL)
+      response = JSON.load(response)
+      hash     = {
+        :limit => response['resp']['rate_limit'].to_i,
+        :calls => response['resp']['calls_made'].to_i
+      }
+    
+      return hash
     end
   end # class << self
 end # Forrst
