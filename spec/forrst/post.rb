@@ -39,4 +39,20 @@ describe('Forrst::Post') do
     post.link?.should         === true
   end
 
+  it('Retrieve all posts') do
+    posts = Forrst::Post.all
+
+    posts.size.should             === 7
+    posts[0].post_id.should       === 86541
+    posts[0].user.username.should === 'jtkendall'
+  end
+
+  it('Retrieve all posts after a certain ID') do
+    posts = Forrst::Post.all(:after => 86541)
+
+    posts.size.should             === 7
+    posts[0].post_id.should       === 86540
+    posts[0].user.username.should === 'ericandrewscott'
+  end
+
 end

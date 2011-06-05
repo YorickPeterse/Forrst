@@ -19,6 +19,7 @@ end
 
 # Set up the stub requests so we don't bombard the Forrst server
 Forrst.oauth.connection = Faraday.new(Forrst.oauth.site)
+
 Forrst.oauth.connection.build do |builder|
   builder.adapter(:test) do |stub|
     stub.get(Forrst::StatisticsURL) do |env|
@@ -51,6 +52,14 @@ Forrst.oauth.connection.build do |builder|
 
     stub.get(Forrst::Post::ShowURL + '?tiny_id=YPj') do |env|
       [200, {'Content-Type' => 'application/json'}, get_fixture('posts/show')]
+    end
+
+    stub.get(Forrst::Post::AllURL) do |env|
+      [200, {'Content-Type' => 'application/json'}, get_fixture('posts/all')]
+    end
+
+    stub.get(Forrst::Post::AllURL + '?after=86541') do |env|
+      [200, {'Content-Type' => 'application/json'}, get_fixture('posts/all_after')]
     end
   end
 end

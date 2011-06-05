@@ -52,6 +52,14 @@ module Forrst
   #
   class Post
     ##
+    # URL relative to Forrst::URL that contains a list of all posts.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    AllURL = '/posts/all'
+
+    ##
     # URL relative to Forrst::URL that contains the details of a single post.
     #
     # @author Yorick Peterse
@@ -265,6 +273,9 @@ module Forrst
     # Retrieves a single post by it's ID or tiny ID. If the parameter given is a Fixnum
     # this method assumes is the ID, if it's a string it assumes it's the tiny ID.
     #
+    # @example
+    #  Forrst::Post[10].title
+    #
     # @author Yorick Peterse
     # @since  0.1a
     # @param  [Fixnum/String] id The ID or the tiny ID.
@@ -283,6 +294,30 @@ module Forrst
       response = JSON.load(response)
 
       return Post.new(response['resp'])
+    end
+
+    ##
+    # Gets all posts from the API, optionally after a certain ID.
+    #
+    # @example
+    #  Forrst::Post.all.each do |post|
+    #    puts post.title
+    #  end
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    # @param  [Hash] options A hash containing additional options to use for the request.
+    # @option options [Fixnum] :after The ID used for the offset of all posts.
+    # @return [Array]
+    #
+    def self.all(options = {})
+      options  = options.subset(:after)
+      response = Forrst.request(:get, AllURL, options)
+      response = JSON.load(response)
+
+      return response['resp']['posts'].map do |post|
+        Post.new(post)
+      end
     end
 
     ##
