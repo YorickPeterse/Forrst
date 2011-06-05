@@ -10,12 +10,6 @@ module Forrst
   #
   #     user.username => 'YorickPeterse'
   #
-  # It's important to remember that the number of comments, posts and such are accessed
-  # using methods such as "comment_count" and "post_count". This is because (hopefully) in
-  # the future the API will allow developers to retrieve a list of all posts that were
-  # liked by a user, all users he's following and so on. Currently only posts can be
-  # retrieved from a user by calling Forrst::User#posts.
-  #
   # @author Yorick Peterse
   # @since  0.1a
   # @attr_reader [String] username The username as used on Forrst.
@@ -40,16 +34,23 @@ module Forrst
   #
   class User
     ##
-    # URL relative to Forrst::URL for retrieving user related data.
+    # URL relative to Forrst::URL for retrieving user information.
     #
     # @author Yorick Peterse
     # @since  0.1a
     #
-    URL = '/users/info'
+    InfoURL = '/users/info'
 
-    attr_reader :username, :name, :url, :comment_count, :like_count, :follower_count, 
-      :following_count, :post_count, :bio, :twitter , :photos, :type, :homepage, :listed, 
-      :tags, :user_id
+    ##
+    # URL relative to Forrst::URL for retrieving the posts of a user.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    PostsURL = '/users/posts'
+
+    attr_reader :username, :name, :url, :statistics, :bio, :twitter, :photos, :type, 
+      :homepage, :listed, :tags, :user_id
 
     ##
     # Retrieves a single user by it's username or ID and returns a new instance of
@@ -73,7 +74,7 @@ module Forrst
         raise(TypeError, "Expected Hash or Fixnum but got #{selector.class} instead")
       end
 
-      response = Forrst.oauth.request(:get, URL, selector)
+      response = Forrst.oauth.request(:get, InfoURL, selector)
 
       return User.new(response)
     end
@@ -91,43 +92,46 @@ module Forrst
     def initialize(response)
       if response.class != Hash
         response = JSON.load(response)
+        response = response['resp']
       end
 
       # We're not directly setting Forrst::User#id as that will trigger warnings in both
       # JRuby and Rubinius.
-      @user_id   = response['resp']['id']
-      @username  = response['resp']['username']
-      @name      = response['resp']['name']
-      @url       = response['resp']['url']
-      @homepage  = response['resp']['homepage_url']
-      @listed    = response['resp']['in_directory']
-      @twitter   = response['resp']['twitter']
-      @bio       = response['resp']['bio']
+      @user_id   = response['id']
+      @username  = response['username']
+      @name      = response['name']
+      @url       = response['url']
+      @homepage  = response['homepage_url']
+      @listed    = response['in_directory']
+      @twitter   = response['twitter']
+      @bio       = response['bio']
 
-      @comment_count   = response['resp']['comments'].to_i
-      @like_count      = response['resp']['likes'].to_i
-      @follower_count  = response['resp']['followers'].to_i
-      @following_count = response['resp']['following'].to_i
-      @post_count      = response['resp']['posts'].to_i
+      @statistics = {
+        :comments  => response['comments'].to_i,
+        :likes     => response['likes'].to_i,
+        :followers => response['followers'].to_i,
+        :following => response['following'].to_i,
+        :posts     => response['posts'].to_i
+      }
 
       # Photos come as a hash with rather wacky keys so those need to be changed as well.
       @photos = {
-        :extra_large => response['resp']['photos']['xl_url'],
-        :large       => response['resp']['photos']['large_url'],
-        :medium      => response['resp']['photos']['medium_url'],
-        :small       => response['resp']['photos']['small_url'],
-        :thumbnail   => response['resp']['photos']['thumb_url']
+        :extra_large => response['photos']['xl_url'],
+        :large       => response['photos']['large_url'],
+        :medium      => response['photos']['medium_url'],
+        :small       => response['photos']['small_url'],
+        :thumbnail   => response['photos']['thumb_url']
       }
 
       # Tags aren't always present
-      if response['resp'].key?('tag_string')
-        @tags = response['resp']['tag_string'].split(',')
+      if response.key?('tag_string')
+        @tags = response['tag_string'].split(',')
       else
         @tags = []
       end
 
       # Last but not least, the user type!
-      @type = response['resp']['is_a'].split('&').map { |i| i.strip }
+      @type = response['is_a'].split('&').map { |i| i.strip }
     end
 
     ##
@@ -136,10 +140,26 @@ module Forrst
     #
     # @author Yorick Peterse
     # @since  0.1a
+    # @param  [Hash] options A hash with additional options to use when retrieving all the
+    # posts.
+    # @option options [String/Symbol] :type The type of posts to retrieve such as :code or
+    # :question.
+    # @option options [Fixnum] :limit The amount of posts to retrieve.
+    # @option options [After]  :after An ID offset used for retrieving a set of posts
+    # after the given ID.
     # @return [Array]
     #
-    def posts
-      
+    def posts(options = {})
+      options  = {
+        :username => @username
+      }.merge(options.subset(:limit, :type, :after))
+
+      response = Forrst.oauth.request(:get, PostsURL, options)
+      response = JSON.load(response)
+
+      return response['resp'].map do |post|
+        Forrst::Post.new(post)
+      end
     end
 
     ##

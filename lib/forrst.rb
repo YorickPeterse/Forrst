@@ -1,7 +1,8 @@
 require 'oauth2'
 require 'json'
+require 'date'
 
-['version', 'user'].each do |file|
+['version', 'monkeys/hash', 'user', 'post'].each do |file|
   require File.expand_path("../forrst/#{file}", __FILE__)
 end
 

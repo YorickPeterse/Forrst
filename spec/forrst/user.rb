@@ -5,13 +5,13 @@ describe('Forrst::User') do
   it('Find a user by his ID') do
     user = Forrst::User.find(6998)
 
-    user.username.should   === 'YorickPeterse'
-    user.name.should       === 'Yorick Peterse'
-    user.user_id.should    === 6998
-    user.homepage.should   === 'http://yorickpeterse.com/'
-    user.url.should        === 'http://forrst.com/people/YorickPeterse'
-    user.twitter.should    === 'YorickPeterse'
-    user.post_count.should === 32
+    user.username.should           === 'YorickPeterse'
+    user.name.should               === 'Yorick Peterse'
+    user.user_id.should            === 6998
+    user.homepage.should           === 'http://yorickpeterse.com/'
+    user.url.should                === 'http://forrst.com/people/YorickPeterse'
+    user.twitter.should            === 'YorickPeterse'
+    user.statistics[:posts].should === 32
 
     user.tags.empty?.should             === false
     user.type.should                    === ['developer']
@@ -50,4 +50,16 @@ describe('Forrst::User') do
 
     user.developer_and_designer?.should === false
   end
+
+  it('Get all the posts of a user') do
+    user  = Forrst::User.find('YorickPeterse')
+    posts = user.posts
+
+    posts.size.should                === 10
+    posts[0].post_id.should          === 86427
+    posts[0].type.should             === 'link'
+    posts[0].created_at.class.should == Time
+    posts[0].user.username.should    === 'YorickPeterse'
+  end
+
 end
