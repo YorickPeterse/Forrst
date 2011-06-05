@@ -253,7 +253,7 @@ module Forrst
       query_items[:sort]      = options[:sort].to_s if options.key?(:sort)
       query_items[:page]      = options[:page].to_s if options.key?(:page)
 
-      response = Forrst.oauth.request(:get, ListURL, query_items)
+      response = Forrst.request(:get, ListURL, query_items)
       response = JSON.load(response)
 
       return response['resp']['posts'].map do |post|
@@ -279,7 +279,7 @@ module Forrst
         raise(TypeError, "Got #{id.class} but expected Fixnum or String")
       end
 
-      response = Forrst.oauth.request(:get, ShowURL, query_items)
+      response = Forrst.request(:get, ShowURL, query_items)
       response = JSON.load(response)
 
       return Post.new(response['resp'])
@@ -350,7 +350,7 @@ module Forrst
     # @return [Array]
     #
     def comments
-      response = Forrst.oauth.request(:get, CommentsURL, :id => @post_id)
+      response = Forrst.request(:get, CommentsURL, :id => @post_id)
       response = JSON.load(response)
 
       return response['comments'].map do |comment|

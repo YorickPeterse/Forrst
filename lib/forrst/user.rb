@@ -189,7 +189,7 @@ module Forrst
         raise(TypeError, "Expected Hash or Fixnum but got #{options.class} instead")
       end
 
-      response = Forrst.oauth.request(:get, InfoURL, options)
+      response = Forrst.request(:get, InfoURL, options)
 
       return User.new(response)
     end
@@ -269,7 +269,7 @@ module Forrst
         :username => @username
       }.merge(options.subset(:limit, :type, :after))
 
-      response = Forrst.oauth.request(:get, PostsURL, options)
+      response = Forrst.request(:get, PostsURL, options)
       response = JSON.load(response)
 
       return response['resp'].map do |post|

@@ -39,18 +39,47 @@ module Forrst
   #
   DateFormat = '%Y-%m-%d %H:%M:%S'
 
+
   class << self
+    ##
     # The access token returned once a client has been authorized.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
     attr_accessor :access_token
 
+    ##
     # The ID of the application as provided by Forrst.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
     attr_accessor :id
 
+    ##
     # The secret of the application as provided by Forrst.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
     attr_accessor :secret
 
+    ##
     # Instance of OAuth2::Client.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
     attr_accessor :oauth
+
+    ##
+    # The user agent to use for all API calls.
+    #
+    # @author Yorick Peterse
+    # @since  0.1.2
+    #
+    attr_accessor :user_agent
 
     ##
     # Sets various configuration options in the module so that they can be used by other
@@ -72,6 +101,31 @@ module Forrst
     end
 
     ##
+    # Sends a request to the API server using the method, URL and optionally a hash of
+    # options.
+    #
+    # @author Yorick Peterse
+    # @since  0.1.2
+    # @param  [Symbol] verb The HTTP verb to use as a symbol.
+    # @param  [String] url The URI relative to the main one to send the request to.
+    # @param  [Hash] options A hash with additional options to pass to Faraday.
+    # @see    OAuth2::Client#request
+    # @return [Mixed]
+    #
+    def request(verb, url, options = {})
+      @user_agent ||= "Forrst/#{Forrst::Version} (#{RUBY_ENGINE}; #{RUBY_VERSION};" \
+        + " #{RUBY_PLATFORM})"
+
+      # Be a nice guy and set those headers correctly
+      Forrst.oauth.connection.headers = {
+        'User-Agent' => @user_agent, 
+        'Accept'     => 'application/json, text/javascript'
+      }
+
+      return Forrst.oauth.request(verb, url, options)
+    end
+
+    ##
     # Gets a set of statistics from the API server.
     #
     # @example
@@ -83,7 +137,7 @@ module Forrst
     # @return [Hash]
     #
     def statistics
-      response = @oauth.request(:get, StatisticsURL)
+      response = Forrst.request(:get, StatisticsURL)
       response = JSON.load(response)
       hash     = {
         :limit => response['resp']['rate_limit'].to_i,
