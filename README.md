@@ -61,6 +61,16 @@ following commands instead:
 The command `rake test` is not required but recommended as it will check to see if your
 environment is running the tests properly.
 
+## Contributing
+
+Contributions are more than welcome as long as they follow the following guidelines:
+
+* Don't break compatibility with Ruby distributions such as JRuby and Rubinius.
+* Document your code.
+* Use Unix line endings (`\n`)
+* Don't add bullshit code just because you like the way it's named or because you're used
+  to. New code (or modified code) should be useful.
+
 ## License
 
 This API is licensed under the MIT license. A copy of this license can be found in the
