@@ -58,7 +58,7 @@ describe('Forrst::User') do
     posts.size.should                === 10
     posts[0].post_id.should          === 86427
     posts[0].type.should             === 'link'
-    posts[0].created_at.class.should == Time
+    posts[0].created_at.class.should == Date
     posts[0].user.username.should    === 'YorickPeterse'
   end
 

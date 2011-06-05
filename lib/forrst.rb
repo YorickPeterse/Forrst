@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'oauth2'
 require 'json'
 require 'date'

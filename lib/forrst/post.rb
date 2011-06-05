@@ -23,6 +23,14 @@ module Forrst
     ListURL = '/posts/list'
 
     ##
+    # URL relative to Forrst::URL that contains all the comments for a given post.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    CommentURL = '/posts/comments'
+
+    ##
     # The ID of the post.
     #
     # @author Yorick Peterse
@@ -55,7 +63,8 @@ module Forrst
     attr_reader :post_url
 
     ##
-    # The date and time on which the post was created.
+    # The date and time on which the post was created. The value of this attribute is an
+    # instance of the Date class.
     #
     # @author Yorick Peterse
     # @since  0.1a
@@ -63,7 +72,8 @@ module Forrst
     attr_reader :created_at
 
     ##
-    # The date and time on which the post was updated.
+    # The date and time on which the post was updated. The value of this attribute is an
+    # instance of the Date class.
     #
     # @author Yorick Peterse
     # @since  0.1a
@@ -248,8 +258,8 @@ module Forrst
       @tiny_id     = response['id']
       @type        = response['post_type']
       @post_url    = response['post_url']
-      @created_at  = Date.parse(response['created_at']).to_time
-      @updated_at  = Date.parse(response['updated_at']).to_time
+      @created_at  = Date.strptime(response['created_at'], '%Y-%m-%d %H:%M:%S')
+      @updated_at  = Date.strptime(response['updated_at'], '%Y-%m-%d %H:%M:%S')
       @user        = Forrst::User.new(response['user'])
       @published   = response['published']
       @public      = response['public']

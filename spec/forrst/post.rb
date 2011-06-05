@@ -8,7 +8,7 @@ describe('Forrst::Post') do
     posts.size.should                === 10
     posts[0].type.should             === 'code'
     posts[0].post_id.should          === 86456
-    posts[0].created_at.class.should == Time
+    posts[0].created_at.class.should == Date
     posts[0].user.username.should    === 'bguillermo'
   end
 
@@ -19,7 +19,7 @@ describe('Forrst::Post') do
     posts[0].type.should             === 'code'
     posts[0].post_id.should          === 86034
     posts[0].user.username.should    === 'amatyr4n'
-    posts[0].updated_at.class.should == Time
+    posts[0].updated_at.class.should == Date
   end
 
   it('Retrieve a single post by it\'s ID') do

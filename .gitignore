@@ -5,6 +5,7 @@ pkg/*.gem
 # Ignore common crap
 .DS_Store
 Thumbs.db
+*.rbc
 
 # Keep those funky gitkeep files
 !.gitkeep
