@@ -1,3 +1,4 @@
+#:nodoc:
 class Hash < Object
   ##
   # Given a set of keys this method will create a new hash with those keys and their

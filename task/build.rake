@@ -7,7 +7,7 @@ namespace :build do
     gem_path = File.expand_path('../../', __FILE__)
     command  = "yard doc #{gem_path}/lib -m markdown -M rdiscount -o #{gem_path}/doc "
     command += "-r #{gem_path}/README.md --private --protected "
-    command += "--files #{gem_path}/license.txt"
+    command += "--files #{gem_path}/LICENSE"
 
     sh(command)
   end

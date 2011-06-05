@@ -22,9 +22,186 @@ module Forrst
     #
     ListURL = '/posts/list'
 
-    attr_reader :post_id, :tiny_id, :type, :post_url, :created_at, :updated_at, :user, 
-      :published, :public, :title, :url, :content, :description, :formatted_description,
-      :statistics, :tags, :snaps
+    ##
+    # The ID of the post.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :post_id
+
+    ##
+    # The "slug" that's added to the URL.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :tiny_id
+
+    ##
+    # The type of post ("code" for example).
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :type
+
+    ##
+    # The URL to the post on Forrst.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :post_url
+
+    ##
+    # The date and time on which the post was created.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :created_at
+
+    ##
+    # The date and time on which the post was updated.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :updated_at
+
+    ##
+    # The author of the post.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :user
+
+    ##
+    # Boolean that indicates if the post has been published or not.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :published
+
+    ##
+    # Boolean that indicates if the post is a public post or requires users to log in.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :public
+
+    ##
+    # The title of the post.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :title
+
+    ##
+    # If the post type was a link this field will contain the URL to the external page.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :url
+
+    ##
+    # The content of the post. If it's a question this field contains the question, if 
+    # it's a code post it will contain the code attached to the post.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :content
+
+    ##
+    # Field containing the description of the post, not used for questions.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :description
+
+    ##
+    # The description in HTML.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :formatted_description
+
+    ##
+    # The content in HTML.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :formatted_content
+
+    ##
+    # A hash containing the number of comments, likes, etc.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :statistics
+
+    ##
+    # An array of all the tags used in the post.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :tags
+
+    ##
+    # A hash containing the URLs to various sizes of the snap in case the post type is 
+    # "snap".
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :snaps
+
+    ##
+    # Given a custom set of options this method will retrieve a list of posts. It's
+    # important to remember that the keys of the hash passed to this method should be
+    # symbols and *not* strings.
+    #
+    # @example
+    #  Forrst::Post.find(:type => :question)
+    #  Forrst::Post.find(:type => :code, :sort => :recent)
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    # @param  [Hash] options
+    # @option options [Symbol] :type The type of posts to retrieve. Can be one of
+    # the following: code, snap, link or question.
+    # @option options [Symbol] :sort The sort order to use, can be any of the
+    # following: recent, popular or best.
+    # @option options [Fixnum] :page The page to use. Each page contains a (currently
+    # unknown) number of posts.
+    # @return [Array]
+    #
+    def self.find(options)
+      # Set the correct keys for the API call
+      query_items             = {}
+      query_items[:post_type] = options[:type].to_s if options.key?(:type)
+      query_items[:sort]      = options[:sort].to_s if options.key?(:sort)
+      query_items[:page]      = options[:page].to_s if options.key?(:page)
+
+      response = Forrst.oauth.request(:get, ListURL, query_items)
+      response = JSON.load(response)
+      
+      return response['resp']['posts'].map do |post|
+        Post.new(post)
+      end
+    end
 
     ##
     # Creates a new instance of Forrst::Post and optionally decodes a JSON response. If a
@@ -55,6 +232,7 @@ module Forrst
 
       @description           = response['description']
       @formatted_description = response['formatted_description']
+      @formatted_content     = response['formatted_content']
       @tags                  = response['tags']
 
       @statistics = {
@@ -75,5 +253,5 @@ module Forrst
         @snaps[:original]    = response['snaps']['original_url']
       end
     end
-  end
-end
+  end # Post
+end # Forrst

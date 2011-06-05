@@ -12,25 +12,6 @@ module Forrst
   #
   # @author Yorick Peterse
   # @since  0.1a
-  # @attr_reader [String] username The username as used on Forrst.
-  # @attr_reader [String] name The real name of the user.
-  # @attr_reader [String] url The URL to the Forrst profile of the user.
-  # @attr_reader [Fixnum] comment_count The amount of comments posted by the user.
-  # @attr_reader [Fixnum] like_count The amount of likes.
-  # @attr_reader [Fixnum] follower_count The amount of people the user is following.
-  # @attr_reader [Fixnum] following_count The amount of people following the user.
-  # @attr_reader [Fixnum] post_count The amount of posts published by the user.
-  # @attr_reader [String] bio The biography of the user.
-  # @attr_reader [String] twitter The Twitter username of the user.
-  # @attr_reader [Hash] photos A hash containing the photos of the user. This hash has the
-  # keys :extra_large, :large, :small and :thumbnail.
-  # @attr_reader [Array] type The type of user, can be ['developer'], ['designer'] or
-  # ['developer', 'designer'].
-  # @attr_reader [String] homepage URL to the user's personal website.
-  # @attr_reader [TrueClass/FalseClass] listed Whether or not the user is listed in the
-  # Forrst.me directory.
-  # @attr_reader [Array] tags An array of tags the user set in his profile.
-  # @attr_reader [Fixnum] user_id The ID of the user.
   #
   class User
     ##
@@ -49,8 +30,107 @@ module Forrst
     #
     PostsURL = '/users/posts'
 
-    attr_reader :username, :name, :url, :statistics, :bio, :twitter, :photos, :type, 
-      :homepage, :listed, :tags, :user_id
+    ##
+    # The user's ID.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a 
+    #
+    attr_reader :user_id
+
+    ##
+    # The username as used on Forrst.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :username
+
+    ##
+    # The real name of the user.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :name
+
+    ##
+    # The URL to the Forrst profile of the user.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :url
+
+    ##
+    # A hash containing various statistics such as the amount of comments, likes, etc.
+    # Note that the keys of this hash are symbols, not strings.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :statistics
+
+    ##
+    # The description of the user.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :bio
+
+    ##
+    # The Twitter username of the user.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :twitter
+
+    ##
+    # A hash containing all the photos of the user. All the keys of this hash are symbols
+    # just like the statistics hash.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :photos
+
+    ##
+    # An array containing the types of the user. Can be any of the following:
+    #
+    # * ['developer']
+    # * ['designer']
+    # * ['developer', 'designer']
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :type
+
+    ##
+    # The URL to the user's website.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :homepage
+
+    ##
+    # A boolean that indicates if the user is listed in the Forrst.me directory or not.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :listed
+
+    ## 
+    # An array of tags for the user.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    #
+    attr_reader :tags
 
     ##
     # Retrieves a single user by it's username or ID and returns a new instance of
@@ -62,19 +142,19 @@ module Forrst
     #
     # @author Yorick Peterse
     # @since  0.1a
-    # @param  [String/Fixnum] selector
+    # @param  [String/Fixnum] options 
     # @return [Forrst::User]
     #
-    def self.find(selector)
-      if selector.class == String
-        selector = {:username => selector}
-      elsif selector.class == Fixnum
-        selector = {:id => selector}
+    def self.find(options)
+      if options.class == String
+        options = {:username => options}
+      elsif options.class == Fixnum
+        options = {:id => options.to_s}
       else
-        raise(TypeError, "Expected Hash or Fixnum but got #{selector.class} instead")
+        raise(TypeError, "Expected Hash or Fixnum but got #{options.class} instead")
       end
 
-      response = Forrst.oauth.request(:get, InfoURL, selector)
+      response = Forrst.oauth.request(:get, InfoURL, options)
 
       return User.new(response)
     end

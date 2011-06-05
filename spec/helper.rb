@@ -21,7 +21,6 @@ end
 Forrst.oauth.connection = Faraday.new(Forrst.oauth.site)
 Forrst.oauth.connection.build do |builder|
   builder.adapter(:test) do |stub|
-    # Stubs for retrieving user details
     stub.get(Forrst::User::InfoURL + '?id=6998') do |env|
       [200, {'Content-Type' => 'application/json'}, get_fixture('user/info')]
     end
@@ -32,6 +31,14 @@ Forrst.oauth.connection.build do |builder|
 
     stub.get(Forrst::User::PostsURL + '?username=YorickPeterse') do |env|
       [200, {'Content-Type' => 'application/json'}, get_fixture('user/posts')]
+    end
+
+    stub.get(Forrst::Post::ListURL + '?post_type=code') do |env|
+      [200, {'Content-Type' => 'application/json'}, get_fixture('posts/list_code')]
+    end
+
+    stub.get(Forrst::Post::ListURL + '?post_type=code&sort=popular') do |env|
+      [200, {'Content-Type' => 'application/json'}, get_fixture('posts/list_popular')]
     end
   end
 end
