@@ -1,7 +1,9 @@
 require 'oauth2'
 require 'json'
 
-require File.expand_path('../forrst/version', __FILE__)
+['version', 'user'].each do |file|
+  require File.expand_path("../forrst/#{file}", __FILE__)
+end
 
 ##
 # The Forrst gem is an API library for the Forrst API that focuses on stability, ease of
@@ -17,7 +19,7 @@ module Forrst
   # @author Yorick Peterse
   # @since  0.1a
   #
-  Endpoint = 'http://forrst.com/api/v2/'
+  URL = 'http://forrst.com/api/v2/'
 
   class << self
     # The access token returned once a client has been authorized.
@@ -28,6 +30,9 @@ module Forrst
 
     # The secret of the application as provided by Forrst.
     attr_accessor :secret
+
+    # Instance of OAuth2::Client.
+    attr_accessor :oauth
 
     ##
     # Sets various configuration options in the module so that they can be used by other
@@ -44,6 +49,8 @@ module Forrst
     #
     def configure
       yield self
+
+      @oauth = OAuth2::Client.new(@id, @secret, :site => URL)
     end
   end # class << self
 end # Forrst
