@@ -69,7 +69,7 @@ Contributions are more than welcome as long as they follow the following guideli
 * Document your code.
 * Use Unix line endings (`\n`)
 * Don't add bullshit code just because you like the way it's named or because you're used
-  to. New code (or modified code) should be useful.
+  to it. New code (or modified code) should be useful.
 
 ## License
 
