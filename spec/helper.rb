@@ -40,5 +40,13 @@ Forrst.oauth.connection.build do |builder|
     stub.get(Forrst::Post::ListURL + '?post_type=code&sort=popular') do |env|
       [200, {'Content-Type' => 'application/json'}, get_fixture('posts/list_popular')]
     end
+
+    stub.get(Forrst::Post::ShowURL + '?id=86427') do |env|
+      [200, {'Content-Type' => 'application/json'}, get_fixture('posts/show')]
+    end
+
+    stub.get(Forrst::Post::ShowURL + '?tiny_id=YPj') do |env|
+      [200, {'Content-Type' => 'application/json'}, get_fixture('posts/show')]
+    end
   end
 end

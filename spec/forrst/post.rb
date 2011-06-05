@@ -22,4 +22,20 @@ describe('Forrst::Post') do
     posts[0].updated_at.class.should == Time
   end
 
+  it('Retrieve a single post by it\'s ID') do
+    post = Forrst::Post[86427]
+
+    post.user.username.should === 'YorickPeterse'
+    post.title.should         === 'Forrst API in Ruby'
+    post.type.should          === 'link'
+  end
+
+  it('Retrieve a single post by it\'s tiny ID') do
+    post = Forrst::Post['YPj']
+
+    post.user.username.should === 'YorickPeterse'
+    post.title.should         === 'Forrst API in Ruby'
+    post.type.should          === 'link'
+  end
+
 end

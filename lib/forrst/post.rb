@@ -173,6 +173,9 @@ module Forrst
     # important to remember that the keys of the hash passed to this method should be
     # symbols and *not* strings.
     #
+    # Note that this method will always return an array of posts, if you want to retrieve
+    # a single post use Forrst::Post[] instead.
+    #
     # @example
     #  Forrst::Post.find(:type => :question)
     #  Forrst::Post.find(:type => :code, :sort => :recent)
@@ -201,6 +204,30 @@ module Forrst
       return response['resp']['posts'].map do |post|
         Post.new(post)
       end
+    end
+
+    ##
+    # Retrieves a single post by it's ID or tiny ID. If the parameter given is a Fixnum
+    # this method assumes is the ID, if it's a string it assumes it's the tiny ID.
+    #
+    # @author Yorick Peterse
+    # @since  0.1a
+    # @param  [Fixnum/String] id The ID or the tiny ID.
+    # @return [Forrst::Post]
+    #
+    def self.[](id)
+      if id.class == Fixnum
+        query_items = {:id => id}
+      elsif id.class == String
+        query_items = {:tiny_id => id}
+      else
+        raise(TypeError, "Got #{id.class} but expected Fixnum or String")
+      end
+
+      response = Forrst.oauth.request(:get, ShowURL, query_items)
+      response = JSON.load(response)
+
+      return Post.new(response['resp'])
     end
 
     ##
