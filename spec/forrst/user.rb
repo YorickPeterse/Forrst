@@ -3,7 +3,7 @@ require File.expand_path('../../helper', __FILE__)
 describe('Forrst::User') do
 
   it('Find a user by his ID') do
-    user = Forrst::User[6998]
+    user = Forrst::User.find(6998)
 
     user.username.should   === 'YorickPeterse'
     user.name.should       === 'Yorick Peterse'
@@ -19,7 +19,7 @@ describe('Forrst::User') do
   end
 
   it('Find a user by his username') do
-    user = Forrst::User['YorickPeterse']
+    user = Forrst::User.find('YorickPeterse')
 
     user.username.should === 'YorickPeterse'
     user.name.should     === 'Yorick Peterse'
@@ -34,19 +34,19 @@ describe('Forrst::User') do
   end
 
   it('Check if a user is a developer') do
-    user = Forrst::User['YorickPeterse']
+    user = Forrst::User.find('YorickPeterse')
 
     user.developer?.should === true
   end
 
   it('Check if a user is a designer') do
-    user = Forrst::User['YorickPeterse']
+    user = Forrst::User.find('YorickPeterse')
 
     user.designer?.should === false
   end
 
   it('Check if a user is both a designer and developer') do
-    user = Forrst::User['YorickPeterse']
+    user = Forrst::User.find('YorickPeterse')
 
     user.developer_and_designer?.should === false
   end

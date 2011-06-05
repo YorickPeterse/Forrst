@@ -1,9 +1,9 @@
 module Forrst
   ##
   # Forrst::User is the class used for retrieving details about a particular user. A user
-  # is retrieved by calling Forrst::User.[] and passing a username or ID to it:
+  # is retrieved by calling Forrst::User.find and passing a username or ID to it:
   #
-  #     user = Forrst::User['yorickpeterse'] => #<Forrst::User:0x1234567>
+  #     user = Forrst::User.find('yorickpeterse') => #<Forrst::User:0x1234567>
   #
   # Once an instance has been created you can retrieve various details, such as the
   # username, simply by calling methods on the resulting object:
@@ -56,15 +56,15 @@ module Forrst
     # Forrst::User with these details.
     #
     # @example
-    #  Forrst::User['yorickpeterse']
-    #  Forrst::User[6998]
+    #  Forrst::User.find('yorickpeterse')
+    #  Forrst::User.find(6998)
     #
     # @author Yorick Peterse
     # @since  0.1a
     # @param  [String/Fixnum] selector
     # @return [Forrst::User]
     #
-    def self.[](selector)
+    def self.find(selector)
       if selector.class == String
         selector = {:username => selector}
       elsif selector.class == Fixnum
