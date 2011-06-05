@@ -113,8 +113,7 @@ module Forrst
     # @return [Mixed]
     #
     def request(verb, url, options = {})
-      @user_agent ||= "Forrst/#{Forrst::Version} (#{RUBY_ENGINE}; #{RUBY_VERSION};" \
-        + " #{RUBY_PLATFORM})"
+      @user_agent ||= "Forrst/#{Forrst::Version} (#{RUBY_DESCRIPTION})"
 
       # Be a nice guy and set those headers correctly
       Forrst.oauth.connection.headers = {
