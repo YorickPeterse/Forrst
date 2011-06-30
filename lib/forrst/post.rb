@@ -437,4 +437,4 @@ module Forrst
       return @type === 'link'
     end
   end # Post
-end # Forrst)
+end # Forrst

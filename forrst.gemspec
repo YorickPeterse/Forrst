@@ -19,9 +19,9 @@ Gem::Specification.new do |s|
 
   s.add_dependency('json'  , ['~> 1.5.1'])
   s.add_dependency('oauth2', ['~> 0.4.1'])
-  
+
   s.add_development_dependency('rake'     , ['~> 0.8.7'])
-	s.add_development_dependency('rspec'    , ['~> 2.6.0'])
-	s.add_development_dependency('yard'     , ['~> 0.7.1'])
+  s.add_development_dependency('rspec'    , ['~> 2.6.0'])
+  s.add_development_dependency('yard'     , ['~> 0.7.1'])
   s.add_development_dependency('rdiscount', ['~> 1.6.8'])
 end
